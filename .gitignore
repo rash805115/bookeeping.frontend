@@ -1,0 +1,13 @@
+# Eclipse Environment
+.project
+.settings/
+
+# Python Eclipse Environment
+.project
+.pydevproject
+
+# Java Eclipse Environment
+.project
+.settings/
+target/
+__pycache__/
