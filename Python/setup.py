@@ -7,5 +7,5 @@ setuptools.setup(
         author = "Rahul Chaudhary",
         author_email = "rahul300chaudhary400@gmail.com",
         description = "Python flavored API to assist developing the frontend for BooKeeping project.",
-        install_requires = ["boto==2.37.0"]
+        install_requires = ["boto == 2.37.0", "requests == 2.6.0"]
 )
