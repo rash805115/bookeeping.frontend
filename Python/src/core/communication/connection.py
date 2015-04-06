@@ -1,14 +1,15 @@
 import requests
 
-class BooKeeping_HTTP():
+class Connection():
 	def __init__(self, servername, serverport, apiprefix, https = False):
 		self._baseurl = ("https" if https else "http") + "://" + servername + ":" + str(serverport) + "/" + apiprefix + "/"
 		self._headers = {"Content-Type": "application/json"}
-		self._default_timeout_seconds = 10
+		self.timeout = 10
 	
 	#This has to be re-worked once issue#9 gets resolved in bookeeping.rest
 	def request(self, command, payload):
-		response = requests.post(self._baseurl + command, headers = self._headers, data = str(payload), timeout = self._default_timeout_seconds)
+		response = requests.post(self._baseurl + command, headers = self._headers, data = str(payload), timeout = self.timeout)
+		
 		if(response.status_code == 200):
 			return response.json()
 		else:

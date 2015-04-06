@@ -1,23 +1,21 @@
-import core.communication.bookeeping_http
-
 class User:
-	def __init__(self, servername, serverport, apiprefix, https = False):
-		self._server = core.communication.bookeeping_http.BooKeeping_HTTP(servername, serverport, apiprefix, https)
+	def __init__(self, connection):
+		self._connection = connection
 	
-	def get_user(self, userid):
+	def get_user(self, user_id):
 		payload = {
-			"userId": userid
+			"userId": user_id
 		}
-		return self._server.request("user/info", payload)
+		return self._connection.request("user/info", payload)
 	
-	def create_user(self, userid, firstname = None, lastname = None, primary_email = None, secondary_email = None, phone = None):
+	def create_user(self, user_id, first_name = None, last_name = None, primary_email = None, secondary_email = None, phone = None):
 		payload = {
-			"userId": userid
+			"userId": user_id
 		}
-		if(firstname is not None):
-			payload["firstName"] = firstname
-		if(lastname is not None):
-			payload["lastName"] = lastname
+		if(first_name is not None):
+			payload["firstName"] = first_name
+		if(last_name is not None):
+			payload["lastName"] = last_name
 		if(primary_email is not None):
 			payload["primaryEmail"] = primary_email
 		if(secondary_email is not None):
@@ -25,4 +23,4 @@ class User:
 		if(phone is not None):
 			payload["phone"] = phone
 			
-		return self._server.request("user/create", payload)
+		return self._connection.request("user/create", payload)
