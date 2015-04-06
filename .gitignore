@@ -3,11 +3,8 @@
 .settings/
 
 # Python Eclipse Environment
-.project
 .pydevproject
+__pycache__/
 
 # Java Eclipse Environment
-.project
-.settings/
 target/
-__pycache__/
