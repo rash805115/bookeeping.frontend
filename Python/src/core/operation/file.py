@@ -1,4 +1,7 @@
 class File:
+	WRITE_PERMISSION = "write"
+	READ_PERMISSION = "read"
+	
 	def __init__(self, connection):
 		self._connection = connection
 	
@@ -56,3 +59,26 @@ class File:
 			"newFileName": new_file_name
 		}
 		commit.payload.update({"File_Move": sub_payload})
+	
+	def share_file(self, commit, user_id, filesystem_id, filesystem_version, file_path, file_name, share_with_user, file_permission):
+		sub_payload = {
+			"userId": user_id,
+			"filesystemId": filesystem_id,
+			"filesystemVersion": filesystem_version,
+			"filePath": file_path,
+			"fileName": file_name,
+			"shareWithUserId": share_with_user,
+			"filePermission": file_permission
+		}
+		commit.payload.update({"File_Share": sub_payload})
+	
+	def unshare_file(self, commit, user_id, filesystem_id, filesystem_version, file_path, file_name, unshare_with_user):
+		sub_payload = {
+			"userId": user_id,
+			"filesystemId": filesystem_id,
+			"filesystemVersion": filesystem_version,
+			"filePath": file_path,
+			"fileName": file_name,
+			"shareWithUserId": unshare_with_user
+		}
+		commit.payload.update({"File_Unshare": sub_payload})
