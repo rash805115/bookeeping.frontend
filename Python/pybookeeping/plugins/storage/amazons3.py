@@ -1,8 +1,8 @@
-import plugins.storage.interface.storage
+import pybookeeping.plugins.storage.interface.storage
 import boto.s3.connection
 import boto.s3.key
 
-class AmazonS3(plugins.storage.interface.storage.Storage):
+class AmazonS3(pybookeeping.plugins.storage.interface.storage.Storage):
 	def __init__(self, accesskey, secretkey, bucketname):
 		self._connection = boto.s3.connection.S3Connection(accesskey, secretkey)
 		self._bucket = self._connection.get_bucket(bucketname)
