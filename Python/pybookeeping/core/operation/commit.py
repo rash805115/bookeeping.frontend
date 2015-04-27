@@ -9,4 +9,4 @@ class Commit:
 	def commit(self):
 		response = self._connection.request("commit", self.payload)
 		self._connection = None
-		return response
+		return response["data"]

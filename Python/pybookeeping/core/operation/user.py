@@ -6,7 +6,8 @@ class User:
 		payload = {
 			"userId": user_id
 		}
-		return self._connection.request("user/info", payload)
+		response = self._connection.request("user/info", payload)
+		return response["data"]
 	
 	def create_user(self, user_id, first_name = None, last_name = None, primary_email = None, secondary_email = None, phone = None):
 		payload = {

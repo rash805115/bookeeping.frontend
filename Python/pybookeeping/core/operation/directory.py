@@ -10,7 +10,8 @@ class Directory:
 			"directoryPath": directory_path,
 			"directoryName": directory_name
 		}
-		return self._connection.request("directory/info", payload)
+		response = self._connection.request("directory/info", payload)
+		return response["data"]
 	
 	def create_directory(self, commit, user_id, filesystem_id, filesystem_version, directory_path, directory_name):
 		sub_payload = {

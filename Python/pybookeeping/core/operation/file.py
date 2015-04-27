@@ -13,7 +13,8 @@ class File:
 			"filePath": file_path,
 			"fileName": file_name
 		}
-		return self._connection.request("file/info", payload)
+		response = self._connection.request("file/info", payload)
+		return response["data"]
 	
 	def create_file(self, commit, user_id, filesystem_id, filesystem_version, file_path, file_name):
 		sub_payload = {

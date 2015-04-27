@@ -1,3 +1,6 @@
+import core.operation.user as user
+import core.operation.xray as xray
+
 class Filesystem:
 	def __init__(self, connection):
 		self._connection = connection
@@ -7,7 +10,15 @@ class Filesystem:
 			"userId": user_id,
 			"filesystemId": filesystem_id
 		}
-		return self._connection.request("filesystem/info", payload)
+		response = self._connection.request("filesystem/info", payload)
+		return response["data"]
+	
+	def get_all_filesystem(self, user_id):
+		user_obj = user.User(self._connection)
+		user_node = user_obj.get_user(user_id)["nodeid"]
+		
+		xray_obj = xray.Xray(self._connection)
+		return xray_obj.xray_node(user_node)
 	
 	def create_filesystem(self, commit, user_id, filesystem_id):
 		sub_payload = {
