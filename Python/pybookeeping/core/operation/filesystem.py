@@ -20,12 +20,12 @@ class Filesystem:
 		xray_obj = xray.Xray(self._connection)
 		return xray_obj.xray_node(user_node)
 	
-	def create_filesystem(self, commit, user_id, filesystem_id):
-		sub_payload = {
+	def create_filesystem(self, user_id, filesystem_id):
+		payload = {
 			"userId": user_id,
 			"filesystemId": filesystem_id
 		}
-		commit.add_event({"Filesystem_Create": sub_payload})
+		return self._connection.request("filesystem/create", payload)
 	
 	def create_filesystem_version(self, commit, node_id):
 		sub_payload = {
