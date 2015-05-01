@@ -9,6 +9,13 @@ class Xray:
 		response = self._connection.request("xray/node", payload)
 		return response["data"]
 	
+	def xray_full_node(self, node_id):
+		payload = {
+			"nodeId": node_id
+		}
+		response = self._connection.request("xray/node/full", payload)
+		return response["data"]
+	
 	def xray_version(self, node_id):
 		payload = {
 			"nodeId": node_id

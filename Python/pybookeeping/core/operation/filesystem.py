@@ -20,10 +20,11 @@ class Filesystem:
 		xray_obj = xray.Xray(self._connection)
 		return xray_obj.xray_node(user_node)
 	
-	def create_filesystem(self, user_id, filesystem_id):
+	def create_filesystem(self, user_id, filesystem_id, local_path):
 		payload = {
 			"userId": user_id,
-			"filesystemId": filesystem_id
+			"filesystemId": filesystem_id,
+			"localPath": local_path
 		}
 		return self._connection.request("filesystem/create", payload)
 	
