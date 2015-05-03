@@ -39,6 +39,9 @@ class Structure:
 			"namehash": namehash,
 			"contenthash": contenthash,
 			"combinedhash": combinedhash,
+			"directory": False,
+			"name": filename,
+			"path": filepath[ : filepath.rfind("/")],
 			"children": "none" 
 		}
 		
@@ -59,6 +62,9 @@ class Structure:
 			"namehash": namehash,
 			"contenthash": contenthash,
 			"combinedhash": combinedhash,
+			"directory": True,
+			"name": directoryname,
+			"path": directorypath[ : directorypath.rfind("/")],
 			"children": childrentree
 		}
 		

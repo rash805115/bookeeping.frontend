@@ -43,11 +43,16 @@ class Xray:
 		except KeyError:
 			return None
 	
-	def diff(self, local_xray, remote_xray):
-		add_list = []
-		del_list = []
-		modify_list = []
+	def copy(self, src_dict):
+		copy_dict = {}
+		for key in src_dict:
+			if not isinstance(src_dict[key], dict):
+				copy_dict[key] = src_dict[key]
 		
+		return copy_dict
+	
+	def diff(self, local_xray, remote_xray):
+		flat_structure = {}
 		for node in remote_xray:
 			children = [node]
 			path_list = []
@@ -66,13 +71,18 @@ class Xray:
 				local_child = self.extract_value(local_xray, path_list)
 				
 				if local_child is not None:
+					new_entry = self.copy(local_child)
 					local_child["visited"] = True
-					if(local_child["combinedhash"] != remote_child["combinedhash"]):
-						modify_list.append([local_child, remote_child])
 					
+					if(local_child["contenthash"] != remote_child["contenthash"]):
+						new_entry["change"] = "modify"
+					else:
+						new_entry["change"] = "none"
+					
+					flat_structure[key] = new_entry
 					children = remote_child["children"] + children
 				else:
-					del_list.append(remote_child)
+					flat_structure[key] = {"change": "delete"}
 		
 		for key in local_xray:
 			children = [key]
@@ -83,10 +93,11 @@ class Xray:
 				child = self.extract_value(local_xray, path_list)
 				
 				if "visited" not in child:
-					add_list.append(child)
+					new_entry = self.copy(child)
+					new_entry["change"] = "add"
+					flat_structure[path_list[-1]] = new_entry
 				
 				if child["children"] != "none":
-					child["path"] = path_list[-1]
 					children = list(child["children"].keys()) + children
 					
-		return add_list, del_list, modify_list
+		return flat_structure
