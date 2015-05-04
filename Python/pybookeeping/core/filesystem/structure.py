@@ -31,6 +31,7 @@ class Structure:
 	
 	def filesummary(self, filepath):
 		filename = filepath[filepath.rfind("/") + 1 : ]
+		relative_filepath = filepath[len(self._rootdirectory) : ]
 		namehash = self.stringhash(filename)
 		contenthash = self.filehash(filepath)
 		combinedhash = self.stringhash(namehash + contenthash)
@@ -41,7 +42,7 @@ class Structure:
 			"combinedhash": combinedhash,
 			"directory": False,
 			"name": filename,
-			"path": filepath[ : filepath.rfind("/")],
+			"path": "/" if relative_filepath[ : relative_filepath.rfind("/")] == "" else relative_filepath[ : relative_filepath.rfind("/")],
 			"children": "none" 
 		}
 		
@@ -49,6 +50,7 @@ class Structure:
 	
 	def directorysummary(self, directorypath, childrentree):
 		directoryname = directorypath[directorypath.rfind("/") + 1 : ]
+		relative_dirpath = directorypath[len(self._rootdirectory) : ]
 		directoryhash = hashlib.md5()
 		
 		for key in sorted(childrentree.keys()):
@@ -64,7 +66,7 @@ class Structure:
 			"combinedhash": combinedhash,
 			"directory": True,
 			"name": directoryname,
-			"path": directorypath[ : directorypath.rfind("/")],
+			"path": "/" if relative_dirpath[ : relative_dirpath.rfind("/")] == "" else relative_dirpath[ : relative_dirpath.rfind("/")],
 			"children": childrentree
 		}
 		
