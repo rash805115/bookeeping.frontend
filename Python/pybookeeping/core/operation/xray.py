@@ -30,9 +30,20 @@ class Xray:
 		response = self._connection.request("xray/deleted", payload)
 		return response["data"]
 	
-	def extract_value(self, local_xray, levels):
+	def generate_path(self, path):
+		pieces = path.split("/")
+		levels = []
+		
+		for i in range(2, len(pieces) + 1):
+			shard = pieces[0 : i]
+			levels.append("/".join(shard))
+		
+		return levels
+	
+	def extract_value(self, local_xray, path):
+		levels = self.generate_path(path)
 		data_dict = local_xray
-		for i in levels[:-1]:
+		for i in levels[ : -1]:
 			if i in data_dict:
 				data_dict = data_dict[i]["children"]
 			else:
@@ -55,7 +66,6 @@ class Xray:
 		flat_structure = {}
 		for node in remote_xray:
 			children = [node]
-			path_list = []
 			while len(children) != 0:
 				remote_child = children.pop(0)
 				
@@ -67,8 +77,7 @@ class Xray:
 					name = remote_child["fileName"]
 			
 				key = (path if path == "/" else path + "/") + name
-				path_list.append(key)
-				local_child = self.extract_value(local_xray, path_list)
+				local_child = self.extract_value(local_xray, key)
 				
 				if local_child is not None:
 					new_entry = self.copy(local_child)
@@ -86,16 +95,15 @@ class Xray:
 		
 		for key in local_xray:
 			children = [key]
-			path_list = []
 			
 			while(len(children) != 0):
-				path_list.append(children.pop(0))
-				child = self.extract_value(local_xray, path_list)
+				child_path = children.pop(0)
+				child = self.extract_value(local_xray, child_path)
 				
 				if "visited" not in child:
 					new_entry = self.copy(child)
 					new_entry["change"] = "add"
-					flat_structure[path_list[-1]] = new_entry
+					flat_structure[child_path] = new_entry
 				
 				if child["children"] != "none":
 					children = list(child["children"].keys()) + children
