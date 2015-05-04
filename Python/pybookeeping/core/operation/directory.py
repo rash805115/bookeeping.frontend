@@ -13,7 +13,14 @@ class Directory:
 		response = self._connection.request("directory/info", payload)
 		return response["data"]
 	
-	def create_directory(self, commit, user_id, filesystem_id, filesystem_version, directory_path, directory_name):
+	def modify_directory(self, nodeid, properties):
+		payload = {
+			"nodeId": nodeid
+		}
+		payload.update(properties)
+		return self._connection.request("node/modify", payload)
+	
+	def create_directory(self, commit, user_id, filesystem_id, filesystem_version, directory_path, directory_name, properties):
 		sub_payload = {
 			"userId": user_id,
 			"filesystemId": filesystem_id,
@@ -21,19 +28,22 @@ class Directory:
 			"directoryPath": directory_path,
 			"directoryName": directory_name
 		}
-		commit.add_event({"Directory_Create": sub_payload})
+		sub_payload.update(properties)
+		commit.add_event({"DIRECTORY_CREATE": sub_payload})
 	
-	def create_directory_version(self, commit, node_id):
+	def create_directory_version(self, commit, node_id, change_metadata, properties):
 		sub_payload = {
-			"nodeId": node_id
+			"nodeId": node_id,
+			"CHANGE_METADATA": change_metadata
 		}
-		commit.add_event({"Node_Version": sub_payload})
+		sub_payload.update(properties)
+		commit.add_event({"NODE_VERSION": sub_payload})
 	
 	def delete_directory(self, commit, node_id):
 		sub_payload = {
 			"nodeId": node_id
 		}
-		commit.add_event({"Node_Delete": sub_payload})
+		commit.add_event({"NODE_DELETE": sub_payload})
 	
 	def restore_directory(self, commit, user_id, filesystem_id, filesystem_version, directory_path, directory_name, node_id_to_be_restored):
 		sub_payload = {
@@ -44,7 +54,7 @@ class Directory:
 			"directoryName": directory_name,
 			"nodeIdToBeRestored": node_id_to_be_restored
 		}
-		commit.add_event({"Directory_Restore": sub_payload})
+		commit.add_event({"DIRECTORY_RESTORE": sub_payload})
 	
 	def move_directory(self, commit, user_id, filesystem_id, filesystem_version, old_directory_path, old_directory_name, new_directory_path, new_directory_name):
 		sub_payload = {
@@ -56,4 +66,4 @@ class Directory:
 			"newDirectoryPath": new_directory_path,
 			"newDirectoryName": new_directory_name
 		}
-		commit.add_event({"Directory_Move": sub_payload})
+		commit.add_event({"DIRECTORY_MOVE": sub_payload})

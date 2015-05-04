@@ -9,8 +9,9 @@ class User:
 		response = self._connection.request("user/info", payload)
 		return response["data"]
 	
-	def create_user(self, user_id):
+	def create_user(self, user_id, properties):
 		payload = {
 			"userId": user_id
 		}
+		payload.update(properties)
 		return self._connection.request("user/create", payload)

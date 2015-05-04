@@ -20,25 +20,34 @@ class Filesystem:
 		xray_obj = xray.Xray(self._connection)
 		return xray_obj.xray_node(user_node)
 	
-	def create_filesystem(self, user_id, filesystem_id, local_path):
+	def modify_filesystem(self, nodeid, properties):
+		payload = {
+			"nodeId": nodeid
+		}
+		payload.update(properties)
+		return self._connection.request("node/modify", payload)
+	
+	def create_filesystem(self, user_id, filesystem_id, properties):
 		payload = {
 			"userId": user_id,
-			"filesystemId": filesystem_id,
-			"localPath": local_path
+			"filesystemId": filesystem_id
 		}
+		payload.update(properties)
 		return self._connection.request("filesystem/create", payload)
 	
-	def create_filesystem_version(self, commit, node_id):
+	def create_filesystem_version(self, commit, node_id, changed_metadata, properties):
 		sub_payload = {
-			"nodeId": node_id
+			"nodeId": node_id,
+			"CHANGE_METADATA": changed_metadata,
 		}
-		commit.add_event({"Node_Version": sub_payload})
+		sub_payload.update(properties)
+		commit.add_event({"NODE_VERSION": sub_payload})
 	
 	def delete_filesystem(self, commit, node_id):
 		sub_payload = {
 			"nodeId": node_id
 		}
-		commit.add_event({"Node_Delete": sub_payload})
+		commit.add_event({"NODE_DELETE": sub_payload})
 	
 	def restore_filesystem(self, commit, user_id, filesystem_id, node_id_to_be_restored):
 		sub_payload = {
@@ -46,4 +55,4 @@ class Filesystem:
 			"filesystemId": filesystem_id,
 			"nodeIdToBeRestored": node_id_to_be_restored
 		}
-		commit.add_event({"Filesystem_Restore": sub_payload})
+		commit.add_event({"FILESYSTEM_RESTORE": sub_payload})

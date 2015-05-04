@@ -88,10 +88,11 @@ class Xray:
 					else:
 						new_entry["change"] = "none"
 					
+					new_entry["nodeid"] = remote_child["nodeId"]
 					flat_structure[key] = new_entry
 					children = remote_child["children"] + children
 				else:
-					flat_structure[key] = {"change": "delete"}
+					flat_structure[key] = {"change": "delete", "nodeid": remote_child["nodeId"]}
 		
 		for key in local_xray:
 			children = [key]
