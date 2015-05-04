@@ -4,7 +4,8 @@ import threading
 
 class Structure:
 	def __init__(self, rootdirectory):
-		self._rootdirectory = rootdirectory[0 : -1] if rootdirectory[-1] == "/" else rootdirectory
+		self._rootdirectory = rootdirectory[0 : -1] if rootdirectory[-1] == os.sep else rootdirectory
+		self._rootdirectory = self._rootdirectory.replace("\\", "/")
 	
 	def absolutepath(self, relativepath):
 		if(relativepath == ""):
@@ -31,7 +32,7 @@ class Structure:
 	
 	def filesummary(self, filepath):
 		filename = filepath[filepath.rfind("/") + 1 : ]
-		relative_filepath = filepath[len(self._rootdirectory) : ]
+		relative_file_path = filepath[ : filepath.rfind("/")].replace(self._rootdirectory, "")
 		namehash = self.stringhash(filename)
 		contenthash = self.filehash(filepath)
 		combinedhash = self.stringhash(namehash + contenthash)
@@ -42,7 +43,7 @@ class Structure:
 			"combinedhash": combinedhash,
 			"directory": False,
 			"name": filename,
-			"path": "/" if relative_filepath[ : relative_filepath.rfind("/")] == "" else relative_filepath[ : relative_filepath.rfind("/")],
+			"path": "/" if relative_file_path == "" else relative_file_path,
 			"children": "none" 
 		}
 		
@@ -50,7 +51,7 @@ class Structure:
 	
 	def directorysummary(self, directorypath, childrentree):
 		directoryname = directorypath[directorypath.rfind("/") + 1 : ]
-		relative_dirpath = directorypath[len(self._rootdirectory) : ]
+		relative_dir_path = directorypath[ : directorypath.rfind("/")].replace(self._rootdirectory, "")
 		directoryhash = hashlib.md5()
 		
 		for key in sorted(childrentree.keys()):
@@ -66,7 +67,7 @@ class Structure:
 			"combinedhash": combinedhash,
 			"directory": True,
 			"name": directoryname,
-			"path": "/" if relative_dirpath[ : relative_dirpath.rfind("/")] == "" else relative_dirpath[ : relative_dirpath.rfind("/")],
+			"path": "/" if relative_dir_path == "" else relative_dir_path,
 			"children": childrentree
 		}
 		
@@ -78,6 +79,7 @@ class Structure:
 		
 		maxlevel = -1
 		for root, _, _ in os.walk(directorypath):
+			root = root.replace("\\", "/")
 			level = root.replace(directorypath, "").count("/")
 			if(level <= maxlevel):
 				bonelevels[level] += [(root + "/" + i) for i in os.listdir(root)]
