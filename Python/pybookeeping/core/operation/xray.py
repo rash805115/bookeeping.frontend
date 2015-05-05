@@ -68,13 +68,16 @@ class Xray:
 			children = [node]
 			while len(children) != 0:
 				remote_child = children.pop(0)
+				is_remote_dir = False
 				
 				try:
 					path = remote_child["directoryPath"]
 					name = remote_child["directoryName"]
+					is_remote_dir = True
 				except KeyError:
 					path = remote_child["filePath"]
 					name = remote_child["fileName"]
+					is_remote_dir = False
 			
 				key = (path if path == "/" else path + "/") + name
 				local_child = self.extract_value(local_xray, key)
@@ -90,9 +93,16 @@ class Xray:
 					
 					new_entry["nodeid"] = remote_child["nodeId"]
 					flat_structure[key] = new_entry
-					children = remote_child["children"] + children
 				else:
-					flat_structure[key] = {"change": "delete", "nodeid": remote_child["nodeId"]}
+					flat_structure[key] = {
+						"directory": is_remote_dir,
+						"change": "delete",
+						"path": path,
+						"name": name,
+						"nodeid": remote_child["nodeId"]
+					}
+				
+				children = remote_child["children"] + children
 		
 		for key in local_xray:
 			children = [key]

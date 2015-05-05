@@ -4,7 +4,7 @@ class Connection():
 	def __init__(self, servername = "54.187.230.72", serverport = 8080, apiprefix = "bookeeping.rest/api", https = False):
 		self._baseurl = ("https" if https else "http") + "://" + servername + ":" + str(serverport) + "/" + apiprefix + "/"
 		self._headers = {"Content-Type": "application/json"}
-		self.timeout = 10
+		self.timeout = 30
 	
 	def request(self, command, payload):
 		response = requests.post(self._baseurl + command, headers = self._headers, data = str(payload), timeout = self.timeout)
