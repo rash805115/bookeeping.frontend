@@ -1,0 +1,1 @@
+_supported_storage = ["Local Filesystem", "Local Server", "Amazon S3", "Dropbox", "Google Drive"]
