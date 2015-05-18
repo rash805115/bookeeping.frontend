@@ -12,6 +12,10 @@ class Commit:
 		self._next_commit_sequence = self._next_commit_sequence + 1
 	
 	def commit(self):
-		response = self._connection.request("commit", self._payload)
+		try:
+			response = self._connection.post_request("commit", str(self._payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
+		
 		self._connection = None
-		return response["data"]

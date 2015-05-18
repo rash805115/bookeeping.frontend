@@ -6,29 +6,45 @@ class Xray:
 		payload = {
 			"nodeId": node_id
 		}
-		response = self._connection.request("xray/node", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("xray/node", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
 	def xray_full_node(self, node_id):
 		payload = {
 			"nodeId": node_id
 		}
-		response = self._connection.request("xray/node/full", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("xray/node/full", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
 	def xray_version(self, node_id):
 		payload = {
 			"nodeId": node_id
 		}
-		response = self._connection.request("xray/version", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("xray/version", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
 	def xray_deleted(self, node_id):
 		payload = {
 			"nodeId": node_id
 		}
-		response = self._connection.request("xray/deleted", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("xray/deleted", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
 	def generate_path(self, path):
 		pieces = path.split("/")

@@ -13,17 +13,26 @@ class File:
 			"filePath": file_path,
 			"fileName": file_name
 		}
-		response = self._connection.request("file/info", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("file/info", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
-	def modify_file(self, nodeid, properties):
+	def modify_file(self, nodeid, properties = {}):
 		payload = {
 			"nodeId": nodeid
 		}
 		payload.update(properties)
-		return self._connection.request("node/modify", payload)
+		
+		try:
+			response = self._connection.post_request("node/modify", str(payload))
+			return True, response
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
-	def create_file(self, commit, user_id, filesystem_id, filesystem_version, file_path, file_name, properties):
+	def create_file(self, commit, user_id, filesystem_id, filesystem_version, file_path, file_name, properties = {}):
 		sub_payload = {
 			"userId": user_id,
 			"filesystemId": filesystem_id,
@@ -34,7 +43,7 @@ class File:
 		sub_payload.update(properties)
 		commit.add_event({"FILE_CREATE": sub_payload})
 	
-	def create_file_version(self, commit, node_id, change_metadata, properties):
+	def create_file_version(self, commit, node_id, change_metadata, properties = {}):
 		sub_payload = {
 			"nodeId": node_id,
 			"CHANGE_METADATA": change_metadata

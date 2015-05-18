@@ -6,12 +6,21 @@ class User:
 		payload = {
 			"userId": user_id
 		}
-		response = self._connection.request("user/info", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("user/info", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
-	def create_user(self, user_id, properties):
+	def create_user(self, user_id, properties = {}):
 		payload = {
 			"userId": user_id
 		}
 		payload.update(properties)
-		return self._connection.request("user/create", payload)
+		
+		try:
+			response = self._connection.post_request("user/create", str(payload))
+			return True, response
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]

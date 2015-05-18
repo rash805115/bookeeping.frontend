@@ -10,32 +10,45 @@ class Filesystem:
 			"userId": user_id,
 			"filesystemId": filesystem_id
 		}
-		response = self._connection.request("filesystem/info", payload)
-		return response["data"]
+		
+		try:
+			response = self._connection.post_request("filesystem/info", str(payload))
+			return True, response["data"]
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
 	def get_all_filesystem(self, user_id):
 		user_obj = user.User(self._connection)
-		user_node = user_obj.get_user(user_id)["nodeId"]
+		user_node = user_obj.get_user(user_id)[1]["nodeId"]
 		
-		xray_obj = xray.Xray(self._connection)
-		return xray_obj.xray_node(user_node)
+		return xray.Xray(self._connection).xray_node(user_node)
 	
-	def modify_filesystem(self, nodeid, properties):
+	def modify_filesystem(self, nodeid, properties = {}):
 		payload = {
 			"nodeId": nodeid
 		}
 		payload.update(properties)
-		return self._connection.request("node/modify", payload)
+		
+		try:
+			response = self._connection.post_request("node/modify", str(payload))
+			return True, response
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
-	def create_filesystem(self, user_id, filesystem_id, properties):
+	def create_filesystem(self, user_id, filesystem_id, properties = {}):
 		payload = {
 			"userId": user_id,
 			"filesystemId": filesystem_id
 		}
 		payload.update(properties)
-		return self._connection.request("filesystem/create", payload)
+		
+		try:
+			response = self._connection.post_request("filesystem/create", str(payload))
+			return True, response
+		except ValueError as error:
+			return False, error.args[0]["operation_message"]
 	
-	def create_filesystem_version(self, commit, node_id, changed_metadata, properties):
+	def create_filesystem_version(self, commit, node_id, changed_metadata, properties = {}):
 		sub_payload = {
 			"nodeId": node_id,
 			"CHANGE_METADATA": changed_metadata,
